@@ -1,0 +1,17 @@
+# Cocos Creator 生成目录
+library/
+temp/
+local/
+profiles/
+build/
+native/
+node_modules/
+
+# 系统文件
+.DS_Store
+Thumbs.db
+
+# 工具/编辑器内部目录（不入库）
+.reasonix/
+.creator/
+.workbuddy/
