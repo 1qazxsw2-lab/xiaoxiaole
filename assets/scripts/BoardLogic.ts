@@ -39,6 +39,7 @@ export function findMatches(board: number[][]): Map<number, Set<number>> {
     const matches = new Map<number, Set<number>>();
     board.forEach((row, i) => {
         row.forEach((color, j) => { 
+            if (color === -1) return; // 空格不参与匹配（修复：消除后残留 -1 被误判为三连）
             if (i >= 2 && board[i - 1][j] === color && board[i - 2][j] === color) {
                 addMatches(matches, i, j);
                 addMatches(matches, i - 1, j);
