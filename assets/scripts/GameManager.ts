@@ -38,6 +38,7 @@ export class GameManager extends Component {
             this.board = createBoard(this.boardRows, this.boardCols, this.colorCount);
         }while(!hasValidMove(this.board));
         this.createBlocks();
+        this.updateScore();
     }
 
     createBlocks() {
@@ -130,11 +131,31 @@ export class GameManager extends Component {
             this.updateScore(matchCount, guard);
             await this.collapseAndRefillBlocks();
         }
+        // 连锁全部结束后检测死局：全盘无任何可消除的交换 → 自动重开新棋盘
+        if (!hasValidMove(this.board)) {
+            this.restartBoard();
+        }
     }
 
-    updateScore(matchCount: number, guard: number){
+    // 死局重开：销毁全部旧方块节点，生成有解新棋盘并重建表现层
+    private restartBoard() {
+        for (const row of this.blockArray) {
+            for (const block of row) {
+                if (block) block.destroy();
+            }
+        }
+        this.blockArray = [];
+        do {
+            this.board = createBoard(this.boardRows, this.boardCols, this.colorCount);
+        } while (!hasValidMove(this.board));
+        this.createBlocks();
+    }
+
+    updateScore(matchCount?: number, guard?: number){
         if(!this.scoreLabel) return;
-        this.score += calcScore(matchCount,guard);          
+        if(matchCount && guard) {
+            this.score += calcScore(matchCount,guard); 
+        }         
         this.scoreLabel.string = this.score.toString();
     }
 

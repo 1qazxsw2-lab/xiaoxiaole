@@ -1,9 +1,10 @@
-// 消消乐逻辑层单元测试（node 环境，无引擎依赖）
-// 运行：node temp/test/board.test.js
+// 消消乐逻辑层单元测试（Node 环境，零依赖，无引擎依赖）
+// 运行：node test/board.test.js
+// 重新编译逻辑层：见 test/README.md
 const {
     createBoard, findMatches, removeMatches,
     collapseAndRefill, canMatchAfterSwap, hasValidMove, calcScore
-} = require('../temp/test-build/BoardLogic.js');
+} = require('./build/BoardLogic.js');
 
 // ---------- 简易测试框架 ----------
 let pass = 0, fail = 0;
@@ -43,10 +44,10 @@ test('createBoard：500 次随机均满足尺寸/值域/无初始匹配', () => 
     }
 });
 test('createBoard：colorCount < 3 抛异常', () => {
-    assert.throws && false;
     let threw = false;
     try { createBoard(4, 4, 2); } catch (e) { threw = true; }
     assert(threw, 'colorCount=2 未抛异常');
+    threw = false;
     try { createBoard(4, 4, 0); } catch (e) { threw = true; }
     assert(threw, 'colorCount=0 未抛异常');
 });
@@ -120,8 +121,7 @@ test('collapseAndRefill：执行后棋盘无空格(-1)', () => {
         board.forEach(row => row.forEach(c => assert(c !== -1, '残留空格')));
     }
 });
-test('collapseAndRefill：下落+新建后仍无匹配（新建随机填充不检测）', () => {
-    // 仅验证尺寸不变
+test('collapseAndRefill：下落+新建后棋盘尺寸不变', () => {
     const board = createBoard(6, 6, 4);
     removeMatches(board, findMatches(board));
     collapseAndRefill(board, 4);
